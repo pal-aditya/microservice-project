@@ -1,47 +1,75 @@
 # Microservice‑Project
 
-A microservices-based web application built using Python Flask, featuring a modular architecture with authentication, game logic, and a user interface, all deployed via Kubernetes.
+A microservices-based web application built with Python Flask, demonstrating a clean separation of concerns across authentication, gameplay, and frontend delivery using Kubernetes and statically served content.
+
+---
 
 ## 🧩 Architecture Overview
 
-This project consists of **three microservices**, each built using **Python Flask** and containerized for deployment:
+This project is composed of **three microservices**, each implemented using **Python Flask**, and containerized for Kubernetes deployment:
 
 ### 1. `authservice`
-- Handles user **authentication**, including **Sign Up** and **Login**.
-- Exposes REST endpoints for secure session and credential management.
+- Provides **user authentication** (Sign Up and Login).
+- Exposes REST APIs for session and credential handling.
 
 ### 2. `gameservice`
-- Manages game-related data and logic.
-- Powers a basic Snake Game using a grid-based UI.
-- Provides APIs or routes for game state and score updates.
+- Handles all **game logic and state**, including Snake Game mechanics and score management.
 
 ### 3. `frontend`
-- Uses **Nginx** to serve static webpages and acts as a reverse proxy for Flask services.
-- Serves both the **Snake Game interface** and **Login UI**.
-- Connects with `authservice` and `gameservice` via HTTP.
+- Uses **Nginx** to statically serve the web interfaces, including:
+  - The login page
+  - The game UI
+- Acts as a reverse proxy to `authservice` and `gameservice`.
+
+---
 
 ## 🗄️ Database Layer
 
-- Uses **CloudNativePG (PostgreSQL Operator)** for managing the PostgreSQL database.
-- The operator handles:
-  - **High availability** with automated cluster creation and management.
-  - **Replica setup** and **persistent storage**.
-  - Seamless backup using **Barman** integration.
+- Uses **CloudNativePG** (PostgreSQL operator) to manage the database:
+  - Automatic **cluster creation**
+  - High availability with **replication**
+  - **Persistent storage** enabled by default
 
-### Backup Management
+### 🔄 Backup Strategy
 
-- A **Kubernetes manifest** is provided to:
-  - Spin up a **Barman backup cluster**.
-  - Schedule and manage **PostgreSQL backups** using Barman.
+- Integrated with **Barman** using Kubernetes manifests
+- Provides automated backup and restore workflows via:
+  - A separate **backup cluster**
+  - `Backup` manifest objects for periodic or manual snapshots
 
-## ⚙️ Deployment Details
+---
 
-- Each microservice has a **Kubernetes Deployment** and **Service**.
-- Services are resolved using **FQDNs** (Fully Qualified Domain Names) through **CoreDNS**, enabling reliable inter-service communication.
+## ⚙️ Kubernetes Manifests Explained
 
-## 🔗 Internal Communication
+This project contains Kubernetes manifests to configure various system components:
 
-- Services communicate over Kubernetes networking using: http://authservice.sins.svc.cluster.local
+| Manifest File         | Purpose |
+|------------------------|---------|
+| `cluster-issuer.yaml` | Defines a **ClusterIssuer** resource to generate HTTPS TLS certificates using **Let's Encrypt** for custom domains specified in your ingress/gateway hostnames. |
+| `configmap.yaml`      | Stores **PostgreSQL initialization SQL scripts** (like `init.sql`) used to bootstrap the database (e.g., create tables or seed data). |
+| `httpredirect.yaml`   | Configures **HTTP (port 80) redirection to HTTPS (port 443)** for the application's domain. Ensures secure access by default. |
+| `httproute.yaml`      | Defines routing rules that forward traffic from path `/` to the **frontend service**, effectively serving the UI. |
+| `gateway.yaml`        | Sets up an **API Gateway using Kubernetes Gateway API**. It listens on both ports **80 (HTTP)** and **443 (HTTPS)**, configures the TLS certificate from Let's Encrypt, and routes traffic to appropriate services. |
+
+---
+
+## 🔧 Shell Scripts
+
+The repository also includes `.sh` scripts used to help during development and debugging:
+
+| Script File | Purpose |
+|-------------|---------|
+| `*.sh`      | Custom shell scripts used to **generate logs** or **tail logs** from individual services (e.g., authservice, gameservice). Helpful for debugging runtime issues and monitoring service health. |
+
+---
+
+## 🌐 Service Discovery
+
+All services are exposed internally in Kubernetes and can be reached using **FQDNs** resolved by **CoreDNS**:
+
+```http
+http://<service-name>.<namespace>.svc.cluster.local
+
 
 🖼️ UI Screenshots
 
@@ -49,4 +77,4 @@ These interfaces are served statically by the frontend service via Nginx:
 🔐 Login Page
 <img width="738" height="823" alt="Login UI" src="https://github.com/user-attachments/assets/af2bb125-a9f8-413c-86dc-d81cc1eabe31" />
 🐍 Snake Game
-<img width="953" height="818" alt="Snake Game" src="https://github.com/user-attachments/assets/d47dbbf3-e6fc-4789-8ca1-b2817b63bab0" />
+<img width="738" height="823" alt="Snake Game" src="https://github.com/user-attachments/assets/d47dbbf3-e6fc-4789-8ca1-b2817b63bab0" />
