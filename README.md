@@ -69,7 +69,7 @@ All services are exposed internally in Kubernetes and can be reached using **FQD
 
 ```http
 http://<service-name>.<namespace>.svc.cluster.local
-
+```
 ## 🖼️ UI Screenshots
 
 These interfaces are served **statically by the frontend service** via Nginx:
