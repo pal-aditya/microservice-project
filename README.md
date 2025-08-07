@@ -1,36 +1,44 @@
 # Microservice‑Project
 
-A microservices-based project developed by *pal‑aditya*, intended to demonstrate how multiple independent services can communicate and function in a distributed architecture.
+A microservices-based web application built using Python Flask, featuring a modular architecture with authentication, game logic, and a user interface, all deployed via Kubernetes.
 
-##  Project Structure
+## 🧩 Architecture Overview
 
-- **Microservices architecture** — Each component is designed as a standalone service (e.g. user-service, auth-service, etc.), allowing independent development and deployment.
-- **Inter-service communication** via HTTP APIs or messaging middleware (depending on implementation).
-- **Support for modern infrastructure** — The architecture is likely intended for containerization using Docker, and possibly orchestration using Kubernetes (typical for Spring Cloud or similar stacks).
+This project consists of **three microservices**, each built using **Python Flask** and containerized for deployment:
 
-##  Screenshots
+### 1. `authservice`
+- Handles user **authentication**, including **Sign Up** and **Login**.
+- Exposes REST endpoints for secure session and credential management.
 
-Visual previews from the project:
+### 2. `gameservice`
+- Manages game-related data and logic.
+- Powers a basic Snake Game using a grid-based UI.
+- Provides APIs or routes for game state and score updates.
 
-- **Snake Game Interface** – A grid-based snake game, displaying a “Game Over” screen with a score of 0 and a restart option.
-- **Login Portal UI** – A branded login form titled “NextGen Info Solution”, including inputs for username and password, and a sign-up link.
+### 3. `frontend`
+- Uses **Nginx** to serve static webpages and acts as a reverse proxy for Flask services.
+- Serves both the **Snake Game interface** and **Login UI**.
+- Connects with `authservice` and `gameservice` via HTTP.
 
-*(See top of this README for images.)*
+## 🗄️ Database Layer
 
-##  Features
+- Uses **CloudNativePG (PostgreSQL Operator)** for managing the PostgreSQL database.
+- The operator handles:
+  - **High availability** with automated cluster creation and management.
+  - **Replica setup** and **persistent storage**.
+  - Seamless backup using **Barman** integration.
 
-| Feature                        | Description |
-|-------------------------------|-------------|
-| Microservice Architecture     | Independent services allow modular design and scalability. |
-| Scalability & Resilience      | Services can be scaled individually and fail in isolation. |
-| Clean Front-end Interfaces    | Game UI and login templates are simple, clean, and user-friendly. |
+### Backup Management
 
-*(Adapt based on actual services and UI components.)*
+- A **Kubernetes manifest** is provided to:
+  - Spin up a **Barman backup cluster**.
+  - Schedule and manage **PostgreSQL backups** using Barman.
 
-##  Getting Started
+## ⚙️ Deployment Details
 
-1. **Clone the repository**
+- Each microservice has a **Kubernetes Deployment** and **Service**.
+- Services are resolved using **FQDNs** (Fully Qualified Domain Names) through **CoreDNS**, enabling reliable inter-service communication.
 
-   ```bash
-   git clone https://github.com/pal-aditya/microservice-project.git
-   cd microservice-project
+## 🔗 Internal Communication
+
+- Services communicate over Kubernetes networking using:
