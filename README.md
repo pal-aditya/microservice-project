@@ -70,10 +70,6 @@ All services are exposed internally in Kubernetes and can be reached using **FQD
 ```http
 http://<service-name>.<namespace>.svc.cluster.local
 
-
-🖼️ UI Screenshots
-
-These interfaces are served statically by the frontend service via Nginx:
 ## 🖼️ UI Screenshots
 
 These interfaces are served **statically by the frontend service** via Nginx:
@@ -81,3 +77,21 @@ These interfaces are served **statically by the frontend service** via Nginx:
 - 🔐 [Login Page](https://github.com/user-attachments/assets/af2bb125-a9f8-413c-86dc-d81cc1eabe31)
 - 🐍 [Snake Game](https://github.com/user-attachments/assets/d47dbbf3-e6fc-4789-8ca1-b2817b63bab0)
 
+---
+
+## 📈 Autoscaling with HPA
+
+This project uses **Horizontal Pod Autoscaling (HPA)** to automatically scale the number of pods in each microservice deployment based on CPU usage.
+
+### 🛠 How HPA Works
+
+Horizontal Pod Autoscaler monitors the CPU utilization of pods and adjusts the number of replicas accordingly to ensure performance and resource efficiency. This helps the application handle variable traffic without manual scaling.
+
+We’ve configured HPA for all three microservices with the following target:
+
+- **Target Average CPU Utilization**: `56%`
+
+This means Kubernetes will:
+- Scale **up** the number of pods when average CPU usage exceeds 56%
+- Scale **down** when it drops below the threshold
+- Maintain performance and responsiveness even during load spikes
