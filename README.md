@@ -74,7 +74,10 @@ http://<service-name>.<namespace>.svc.cluster.local
 🖼️ UI Screenshots
 
 These interfaces are served statically by the frontend service via Nginx:
-🔐 Login Page
-<img width="738" height="823" alt="Login UI" src="https://github.com/user-attachments/assets/af2bb125-a9f8-413c-86dc-d81cc1eabe31" />
-🐍 Snake Game
-<img width="738" height="823" alt="Snake Game" src="https://github.com/user-attachments/assets/d47dbbf3-e6fc-4789-8ca1-b2817b63bab0" />
+## 🖼️ UI Screenshots
+
+These interfaces are served **statically by the frontend service** via Nginx:
+
+- 🔐 [Login Page](https://github.com/user-attachments/assets/af2bb125-a9f8-413c-86dc-d81cc1eabe31)
+- 🐍 [Snake Game](https://github.com/user-attachments/assets/d47dbbf3-e6fc-4789-8ca1-b2817b63bab0)
+
