@@ -42,3 +42,13 @@ This project consists of **three microservices**, each built using **Python Flas
 ## 🔗 Internal Communication
 
 - Services communicate over Kubernetes networking using:
+
+http://<service-name>.<namespace>.svc.cluster.local
+
+Example:
+```http
+http://authservice.sins.svc.cluster.local
+
+
+<img width="738" height="823" alt="Screenshot 2025-08-07 131121" src="https://github.com/user-attachments/assets/01a51d5e-4703-416f-a470-df513defbb4f" />
+<img width="953" height="818" alt="Screenshot 2025-08-07 131230" src="https://github.com/user-attachments/assets/f03ad5ce-d602-4634-ae71-5f0166d4076d" />
