@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: frontend-service
+  name: frontend-service-name
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1     #How many extra pods can be deployed
+      maxUnavailable: 2 #How many max pods can be deleted
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - image: aditya090/projectk8s:frontend-v5
+        name: frontend-service
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 80
+#        livenessProbe:
+#          httpGet:
+#            path: /
+#            port: 80
+#          initialDelaySeconds: 30
+#          failureThreshold: 5
+#          periodSeconds: 8
+#          timeoutSeconds: 12
+#        resources: 
+#          limits:
+#            cpu: "100m"
+#            memory: "100Mi"
+#          requests:
+#            cpu: "50m"
+#            memory: "64Mi"
+
+status: {}
