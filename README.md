@@ -3,6 +3,15 @@
 A microservices-based web application built with Python Flask, demonstrating a clean separation of concerns across authentication, gameplay, and frontend delivery using Kubernetes and statically served content.
 
 ---
+## Prerequisites
+
+Before proceeding, ensure that the following are installed and configured:
+
+1. **Cloud Native PostgreSQL** – Required for database operations within Kubernetes.  
+2. **KGateway** – To enable and manage Gateway API functionality.  
+3. **Secret Provider** – Since Kubernetes Secrets are only base64-encoded and not secure by default, use a provider like [Secrets Store CSI Driver](https://secrets-store-csi-driver.sigs.k8s.io/) or [External Secrets](https://external-secrets.io/).
+
+---
 
 ## 🧩 Architecture Overview
 
