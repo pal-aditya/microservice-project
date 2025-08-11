@@ -67,7 +67,6 @@ The repository also includes `.sh` scripts used to help during development and d
 
 All services are exposed internally in Kubernetes and can be reached using **FQDNs** resolved by **CoreDNS**:
 
-```http
 http://<service-name>.<namespace>.svc.cluster.local
 
 
@@ -80,4 +79,70 @@ These interfaces are served **statically by the frontend service** via Nginx:
 
 - 🔐 [Login Page](https://github.com/user-attachments/assets/af2bb125-a9f8-413c-86dc-d81cc1eabe31)
 - 🐍 [Snake Game](https://github.com/user-attachments/assets/d47dbbf3-e6fc-4789-8ca1-b2817b63bab0)
+
+
+## 📈 Autoscaling with HPA
+
+This project uses **Horizontal Pod Autoscaling (HPA)** to automatically scale the number of pods in each microservice deployment based on CPU usage.
+
+### 🛠 How HPA Works
+
+Horizontal Pod Autoscaler monitors the **CPU utilization** of running pods and adjusts the number of pod replicas dynamically to maintain optimal performance and resource efficiency.
+
+We’ve configured HPA for all three microservices with the following target:
+
+- **Target Average CPU Utilization**: `56%`
+
+This configuration ensures that:
+
+- Kubernetes **scales up** the number of pods when CPU usage exceeds 56%
+- Kubernetes **scales down** the pods when usage drops below the threshold
+- Application performance remains consistent even during traffic spikes
+
+
+## 🛠 Terraform Integration
+
+This project uses **Terraform** to manage and deploy all Kubernetes manifests in one go.  
+Instead of manually running multiple `kubectl apply` commands, you can use Terraform to apply all `.yml` files and services at once.
+
+### How it Works
+- Uses the **`kubernetes` provider** (`hashicorp/kubernetes`).
+- Loads configuration from your local `~/.kube/config` file to connect to the cluster.
+- Uses the `kubernetes_manifest` resource to:
+  - Apply **all YAML manifests** from a specified directory.
+  - Deploy individual service manifests for each microservice.
+
+Example snippet from our Terraform configuration:
+```hcl
+terraform {
+  required_providers {
+    kubernetes = {
+      version = "~> 2.0"
+      source  = "hashicorp/kubernetes"
+    }
+  }
+}
+
+provider "kubernetes" {
+  config_path = "~/.kube/config"
+}
+
+# Apply all manifests in one directory
+resource "kubernetes_manifest" "blunt_games" {
+  for_each = fileset("/home/Redis/testing", "*.yml")
+  manifest = yamldecode(file("~/testing/${each.value}"))
+}
+
+# Deploy individual services
+resource "kubernetes_manifest" "auth-service" {
+  manifest = yamldecode(file("~/testing/auth-service/service.yml"))
+}
+
+resource "kubernetes_manifest" "frontend" {
+  manifest = yamldecode(file("~/testing/frontend/service.yml"))
+}
+
+resource "kubernetes_manifest" "game-service" {
+  manifest = yamldecode(file("~/testing/game-service/service.yml"))
+}
 
