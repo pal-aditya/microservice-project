@@ -136,6 +136,12 @@ provider "kubernetes" {
   config_path = "~/.kube/config"
 }
 
+resource "kubernetes_namespace" "sins" {
+  metadata {
+    name = "sins"
+  }
+}
+
 # Apply all manifests in one directory
 resource "kubernetes_manifest" "blunt_games" {
   for_each = fileset("/home/Redis/testing", "*.yml")
