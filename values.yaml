@@ -1,0 +1,24 @@
+# values.yaml - restrict Prometheus to one namespace & disable extra dashboards
+
+#prometheus:
+#  prometheusSpec:
+#    namespaceSelector:
+#      matchNames:
+#        - sins  # <-- change this
+#    serviceMonitorNamespaceSelector:
+#      matchNames:
+        - sins  # <-- change this
+#    podMonitorNamespaceSelector:
+#      matchNames:
+        - sins  # <-- change this
+#    deploymentMonitorNamespaceSelector:
+#      matchNames:
+#        - sins
+
+#grafana:
+#  defaultDashboardsEnabled: false   # No preloaded dashboards
+#  adminUser: admin
+#  adminPassword: admin123           # Change in production!
+
+#kubeStateMetrics:
+#  enabled: true

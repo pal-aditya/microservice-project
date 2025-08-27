@@ -1,6 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: sins
   creationTimestamp: null
   labels:
     app: auth-service
@@ -21,9 +22,23 @@ spec:
       labels:
         app: auth-service
     spec:
+      terminationGracePeriodSeconds: 5
+      securityContext:
+        runAsUser: 1000
+        runAsNonRoot: true
+        runAsGroup: 1000
+        fsGroup: 1000
       containers:
-      - image: aditya090/projectk8s:auth
-        name: auth-service
+      - name: auth-service
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            -  All
+        readOnlyRootFileSystem: true
+        previleged: true
+        image: aditya090/projectk8s:auth
+        #name: auth-service
         ports:
           - containerPort: 8080
         env:
@@ -50,4 +65,4 @@ spec:
           limits:
             memory: "128Mi"
             cpu: "500m"
-status: {}
+#status: {}

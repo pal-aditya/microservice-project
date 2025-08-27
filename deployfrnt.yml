@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
+  namespace: sins
   labels:
     app: frontend-service
   name: frontend-service-name
@@ -13,34 +13,34 @@ spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: 1     #How many extra pods can be deployed
-      maxUnavailable: 2 #How many max pods can be deleted
+      maxSurge: 1
+      maxUnavailable: 2
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: frontend
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       containers:
-      - image: aditya090/projectk8s:frontend-v5
-        name: frontend-service
+      - name: frontend-service
+        image: nginxinc/nginx-unprivileged:stable-alpine   # 👈 safer image
         imagePullPolicy: Always
         ports:
           - containerPort: 80
-#        livenessProbe:
-#          httpGet:
-#            path: /
-#            port: 80
-#          initialDelaySeconds: 30
-#          failureThreshold: 5
-#          periodSeconds: 8
-#          timeoutSeconds: 12
-#        resources: 
-#          limits:
-#            cpu: "100m"
-#            memory: "100Mi"
-#          requests:
-#            cpu: "50m"
-#            memory: "64Mi"
-
-status: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFileSystem: true
+          privileged: false
+        volumeMounts:
+          - name: cache-volume
+            mountPath: /var/cache/nginx   # 👈 writable tmp
+      volumes:
+        - name: cache-volume
+          emptyDir: {}

@@ -1,6 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: sins
   creationTimestamp: null
   labels:
     app: game-service
@@ -21,9 +22,24 @@ spec:
       labels:
         app: game-service
     spec:
+#    - name: game-service
+      terminationGracePeriodSeconds: 5
+      securityContext:
+        runAsUser: 1000
+        runAsNonRoot: true
+        runAsGroup: 1000
+        fsGroup: 1000
       containers:
-      - image: aditya090/projectk8s:game
-        name: game-service
+      - name: game-service
+        securityContext:
+          allowPrivilegeEscalation: false
+          capablities:
+            drop:
+            - All
+          privileged: false
+          readOnlyRootFileSystem: true
+        image: aditya090/projectk8s:game
+       # name: game-service
         ports:
           - containerPort: 8081
         env:
@@ -52,4 +68,4 @@ spec:
             cpu: "500m"
 
 
-status: {}
+#status: {}

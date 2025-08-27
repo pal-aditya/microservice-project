@@ -3,6 +3,7 @@ kind: HorizontalPodAutoscaler
 metadata:
   creationTimestamp: null
   name: authservice-hpa
+  namespace: sins
 spec:
   maxReplicas: 3
   metrics:
@@ -17,6 +18,6 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: authservice
-status:
-  currentMetrics: null
-  desiredReplicas: 0
+#status:
+#  currentMetrics: null
+#  desiredReplicas: 0
